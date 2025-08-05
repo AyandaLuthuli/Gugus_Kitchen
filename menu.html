@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gugu's Kitchen - Menu</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <h1>Gugu's Kitchen</h1>
+        <nav>
+          <a href="#" class="active">Menu</a>
+          <a href="#">Specials</a>
+          <a href="#">About Us</a>
+          <button id="loginRedirect" class="login-nav-btn">Staff Login</button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="menu-categories">
+        <div class="category-tabs">
+          <button class="tab-btn active" data-category="all">All Items</button>
+          <button class="tab-btn" data-category="starters">Starters</button>
+          <button class="tab-btn" data-category="mains">Main Dishes</button>
+          <button class="tab-btn" data-category="sides">Sides</button>
+          <button class="tab-btn" data-category="desserts">Desserts</button>
+          <button class="tab-btn" data-category="drinks">Drinks</button>
+        </div>
+
+        <div class="menu-items" id="menuItems">
+          <!-- Items will be loaded dynamically -->
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>© 2023 Gugu's Kitchen. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
