@@ -2,57 +2,173 @@
 const menuData = [
   {
     id: 1,
-    name: "Jollof Rice",
-    description: "Flavorful rice cooked with tomatoes, peppers, and spices",
-    price: 12.99,
-    category: "mains",
-    image:
-      "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1313&q=80",
+    name: "Burger Kota",
+    description:
+      "Kota loaded with lettuce, cucumber, chips, burger patty, cheese & sauces",
+    price: 30,
+    category: "starters",
+    image: "images/Regular.png",
   },
   {
     id: 2,
-    name: "Suya",
-    description: "Spicy skewered grilled meat with peanut seasoning",
-    price: 9.99,
-    category: "starters",
-    image:
-      "https://images.unsplash.com/photo-1559847844-5315695dadae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1398&q=80",
+    name: "Russian Kota",
+    description:
+      "Kota loaded with lettuce, cucumber, chips, Russian, cheese & sauces",
+    price: 30,
+    category: "kota",
+    image: "images/Russian.png",
   },
   {
     id: 3,
-    name: "Egusi Soup",
-    description: "Traditional soup made with melon seeds and vegetables",
-    price: 14.99,
-    category: "mains",
-    image:
-      "https://images.unsplash.com/photo-1547592180-85f173990554?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    name: "Regular Kota",
+    description:
+      "Kota loaded with lettuce, cucumber, chips, cheese, egg, burger OR Russian",
+    price: 35,
+    category: "kota",
+    image: "images/BurgerKota.png",
   },
   {
     id: 4,
-    name: "Pounded Yam",
-    description: "Smooth yam dough served with soups",
-    price: 8.99,
-    category: "sides",
-    image:
-      "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+    name: "Beef Kota",
+    description:
+      "Lettuce, cucumber, chips, cheese, egg, smoked ham, Russian & burger",
+    price: 50,
+    category: "kota",
+    image: "images/beef.png",
   },
   {
     id: 5,
-    name: "Chin Chin",
-    description: "Crunchy fried pastry snacks",
-    price: 4.99,
-    category: "desserts",
-    image:
-      "https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1527&q=80",
+    name: "Pork Kota",
+    description:
+      "Lettuce, cucumber, chips, egg, cheese, smoked ham, Russian and pork rib patty",
+    price: 60,
+    category: "mains",
+    image: "images/Pork.png",
   },
   {
     id: 6,
-    name: "Zobo Drink",
-    description: "Refreshing hibiscus tea with ginger and pineapple",
-    price: 3.99,
+    name: "Something Meaty",
+    description:
+      "Lettuce, cucumber, chips, eggs, cheese, burger, Russian, pork rib, smoked ham",
+    price: 80,
+    category: "mains",
+    subcategory: "Main Dishes",
+    image: "images/SomethingMeat.png",
+  },
+  {
+    id: 7,
+    name: "Quantum Bus",
+    description:
+      "Full loaf loaded with chips, 3x burgers, 3x Russians, 3x eggs, 3x cheese slices, smoked ham",
+    price: 135,
+    category: "mains",
+    image: "images/Bus.png",
+  },
+  {
+    id: 8,
+    name: "Coca-Cola",
+    description: "500ml bottled",
+    price: 15,
     category: "drinks",
-    image:
-      "https://images.unsplash.com/photo-1551024709-8f23befc6f87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1525&q=80",
+
+    subcategory: "cold",
+    image: "images/ColaBottle.png",
+  },
+  {
+    id: 13,
+    name: "Coke Can",
+    description: "Classic 330ml can ",
+    price: 11,
+    category: "drinks",
+    subcategory: "cold",
+    image: "images/colaCan.png",
+  },
+  {
+    id: 9,
+    name: "Fanta",
+    description: "500ml bottled",
+    price: 15,
+    category: "drinks",
+    subcategory: "cold",
+    image: "images/Fanta.png",
+  },
+  {
+    id: 10,
+    name: "Sprite",
+    description: "500ml bottled",
+    price: 15,
+    category: "drinks",
+    subcategory: "cold",
+    image: "images/Sprite.png",
+  },
+  {
+    id: 11,
+    name: "Stoney",
+    description: "500ml bottled",
+    price: 15,
+    category: "drinks",
+    subcategory: "cold",
+    image: "images/Stoney.png",
+  },
+  {
+    id: 12,
+    name: "Water Bottle",
+    description: "500ml bottled water",
+    price: 10,
+    category: "drinks",
+    subcategory: "cold",
+    image: "images/Water.png",
+  },
+  {
+    id: 14,
+    name: "Gwinya",
+    description: "Freshly made gwinya",
+    price: 3,
+    category: "starters",
+    subcategory: "food",
+    image: "images/gwinya.png",
+  },
+  {
+    id: 15,
+    name: "Sandwich",
+    description: "Freshly made sandwich with your choice of fillings",
+    price: 15,
+    category: "starters",
+
+    image: "images/Sandwich.png",
+  },
+
+  {
+    id: 16,
+    name: "CheeseSandwich",
+    description: "Freshly made cheese sandwich",
+    price: 12,
+    category: "starters",
+    image: "images/CheeseSandwich.png",
+  },
+  {
+    id: 17,
+    name: "Chips Small",
+    description: "Crispy golden chips",
+    price: 15,
+    category: "sides",
+    image: "images/Chips.png",
+  },
+  {
+    id: 17,
+    name: "Chips Medium",
+    description: "Crispy golden chips",
+    price: 20,
+    category: "sides",
+    image: "images/Chips.png",
+  },
+  {
+    id: 18,
+    name: "Chips Large",
+    description: "Crispy golden chips",
+    price: 15,
+    category: "sides",
+    image: "images/Chips.png",
   },
 ];
 
@@ -147,7 +263,7 @@ function renderMenuItems(items) {
                 <h3>${item.name}</h3>
                 <p>${item.description}</p>
                 <div class="item-price">
-                    <span class="price">$${item.price.toFixed(2)}</span>
+                    <span class="price">R${item.price.toFixed(2)}</span>
                     <button class="order-btn">Order</button>
                 </div>
             </div>
