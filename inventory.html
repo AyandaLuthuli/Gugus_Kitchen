@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gugu's Kitchen - Inventory Management</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const supabaseUrl = "YOUR_SUPABASE_URL";
+      const supabaseKey = "YOUR_SUPABASE_PUBLIC_KEY";
+      const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    </script>
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <h1>Gugu's Kitchen</h1>
+        <nav>
+          <a href="menu.html">Menu</a>
+          <a href="inventory.html" class="active">Inventory</a>
+          <a href="reports.html">Reports</a>
+          <button id="logoutBtn" class="logout-btn">Logout</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="inventory-container">
+      <section class="inventory-controls">
+        <h2>Inventory Management</h2>
+        <div class="control-buttons">
+          <button id="addItemBtn" class="btn primary">Add New Item</button>
+          <button id="refreshBtn" class="btn secondary">Refresh</button>
+          <div class="search-box">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search inventory..."
+            />
+            <button id="searchBtn">Search</button>
+          </div>
+        </div>
+        <div class="filter-options">
+          <label>
+            <input type="checkbox" id="lowStockFilter" checked />
+            Show Low Stock Items Only
+          </label>
+        </div>
+      </section>
+
+      <section class="inventory-list">
+        <div class="inventory-header">
+          <div class="header-item">Item Name</div>
+          <div class="header-item">Current Stock</div>
+          <div class="header-item">Unit</div>
+          <div class="header-item">Reorder Level</div>
+          <div class="header-item">Status</div>
+          <div class="header-item">Actions</div>
+        </div>
+        <div class="inventory-items" id="inventoryItems">
+          <!-- Inventory items will be loaded here -->
+        </div>
+      </section>
+
+      <!-- Add Item Modal -->
+      <div id="addItemModal" class="modal">
+        <div class="modal-content">
+          <span class="close-modal">&times;</span>
+          <h3>Add New Inventory Item</h3>
+          <form id="addItemForm">
+            <div class="form-group">
+              <label for="itemName">Item Name</label>
+              <input type="text" id="itemName" required />
+            </div>
+            <div class="form-group">
+              <label for="initialQuantity">Initial Quantity</label>
+              <input type="number" id="initialQuantity" required />
+            </div>
+            <div class="form-group">
+              <label for="unitOfMeasure">Unit of Measure</label>
+              <select id="unitOfMeasure" required>
+                <option value="kg">Kilograms (kg)</option>
+                <option value="g">Grams (g)</option>
+                <option value="l">Liters (l)</option>
+                <option value="ml">Milliliters (ml)</option>
+                <option value="units">Units</option>
+                <option value="pack">Packs</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="reorderLevel">Reorder Level</label>
+              <input type="number" id="reorderLevel" required />
+            </div>
+            <button type="submit" class="btn primary">Add Item</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Update Stock Modal -->
+      <div id="updateStockModal" class="modal">
+        <div class="modal-content">
+          <span class="close-modal">&times;</span>
+          <h3>Update Stock Level</h3>
+          <form id="updateStockForm">
+            <input type="hidden" id="updateItemId" />
+            <div class="form-group">
+              <label for="currentStock">Current Stock</label>
+              <input type="number" id="currentStock" readonly />
+            </div>
+            <div class="form-group">
+              <label for="adjustmentType">Adjustment Type</label>
+              <select id="adjustmentType">
+                <option value="add">Add Stock</option>
+                <option value="subtract">Subtract Stock</option>
+                <option value="set">Set Exact Amount</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="adjustmentAmount">Amount</label>
+              <input type="number" id="adjustmentAmount" required />
+            </div>
+            <div class="form-group">
+              <label for="adjustmentNotes">Notes (Optional)</label>
+              <textarea id="adjustmentNotes"></textarea>
+            </div>
+            <button type="submit" class="btn primary">Update Stock</button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>© 2023 Gugu's Kitchen. All rights reserved.</p>
+    </footer>
+
+    <script src="inventory.js"></script>
+  </body>
+</html>

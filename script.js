@@ -166,7 +166,7 @@ const menuData = [
     id: 18,
     name: "Chips Large",
     description: "Crispy golden chips",
-    price: 15,
+    price: 30,
     category: "sides",
     image: "images/Chips.png",
   },
