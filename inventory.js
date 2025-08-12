@@ -1,4 +1,5 @@
 // DOM Elements
+
 const inventoryItemsContainer = document.getElementById("inventoryItems");
 const addItemBtn = document.getElementById("addItemBtn");
 const refreshBtn = document.getElementById("refreshBtn");

@@ -192,13 +192,13 @@ document.addEventListener("DOMContentLoaded", function () {
       // Redirect based on role (simplified for demo)
       switch (role) {
         case "admin":
-          window.location.href = "admin-dashboard.html";
+          window.location.href = "inventory.html";
           break;
         case "cashier":
-          window.location.href = "cashier-dashboard.html";
+          window.location.href = "inventory.html";
           break;
         case "customer":
-          window.location.href = "customer-dashboard.html";
+          window.location.href = "menu.html";
           break;
       }
     });
