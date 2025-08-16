@@ -11,11 +11,6 @@
     />
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-      const supabaseUrl = "YOUR_SUPABASE_URL";
-      const supabaseKey = "YOUR_SUPABASE_PUBLIC_KEY";
-      const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-    </script>
   </head>
   <body>
     <header>
@@ -46,11 +41,16 @@
         </div>
       </section>
     </main>
-
+    <section id="cartSection">
+      <h2>Your Cart</h2>
+      <div id="cartItems"></div>
+      <p id="cartTotal">Total: R0.00</p>
+      <button id="checkoutBtn">Checkout</button>
+    </section>
     <footer>
       <p>© 2023 Gugu's Kitchen. All rights reserved.</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="menu.js"></script>
   </body>
 </html>

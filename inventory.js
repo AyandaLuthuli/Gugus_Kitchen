@@ -1,3 +1,8 @@
+const user = JSON.parse(localStorage.getItem("loggedInUser"));
+if (!user || (user.role !== "admin" && user.role !== "cashier")) {
+  window.location.href = "login.html";
+}
+
 // DOM Elements
 
 const inventoryItemsContainer = document.getElementById("inventoryItems");
