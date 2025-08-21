@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - Gugu's Kitchen</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <h1>Admin Panel</h1>
+        <nav>
+          <!-- <a href="menu.html">Back to Menu</a> -->
+          <a href="index.html" class="login-nav-btn">Customer Login</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- Add New Item Form -->
+      <section>
+        <h2>Add New Menu Item</h2>
+        <form id="addItemForm">
+          <input type="text" id="name" placeholder="Item Name" required />
+          <input
+            type="text"
+            id="description"
+            placeholder="Description"
+            required
+          />
+          <input
+            type="number"
+            id="price"
+            placeholder="Price"
+            step="0.01"
+            required
+          />
+          <input type="text" id="category" placeholder="Category" required />
+          <input type="text" id="imageUrl" placeholder="Image URL" required />
+          <button type="submit">Add Item</button>
+        </form>
+      </section>
+
+      <!-- Menu Management -->
+      <section>
+        <h2>Manage Menu Items</h2>
+        <div id="adminMenuItems" class="menu-items">
+          <!-- Items with Update & Delete buttons will load here -->
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>© 2023 Gugu's Kitchen. Admin Panel.</p>
+    </footer>
+
+    <script src="admin.js"></script>
+  </body>
+</html>

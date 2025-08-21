@@ -1,4 +1,3 @@
-
 const { createClient } = supabase;
 const supabaseUrl = "https://dqnmbayimyiuqfzdalox.supabase.co";
 const supabaseKey =
@@ -33,8 +32,10 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   if (user.password_hash === password) {
     localStorage.setItem("loggedInUser", JSON.stringify(user));
 
-    if (role === "admin" || role === "cashier") {
-      window.location.href = "inventory.html";
+    if (role === "admin") {
+      window.location.href = "admin.html";
+    } else if (role === "cashier") {
+      window.location.href = "menu.html";
     } else {
       window.location.href = "menu.html";
     }
