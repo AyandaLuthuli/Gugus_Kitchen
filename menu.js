@@ -143,3 +143,59 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
 // =============================
 fetchMenu();
 renderCart();
+// =============================
+// Checkout Logic
+// =============================
+document.getElementById("checkoutBtn").addEventListener("click", async () => {
+  if (cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  // TODO: Replace with the actual logged-in user's ID from auth/session
+  const userId = 2; // Example: Nomvula's id from your seed
+
+  // Calculate total
+  let total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  try {
+    // 1️⃣ Insert into orders
+    const { data: orderData, error: orderError } = await supabase
+      .from("orders")
+      .insert([{ user_id: userId, status: "pending", total }])
+      .select()
+      .single();
+
+    if (orderError) throw orderError;
+
+    const orderId = orderData.id;
+
+    // 2️⃣ Prepare order_items
+    const orderItems = cart.map((item) => ({
+      order_id: orderId,
+      menu_id: item.id,
+      quantity: item.quantity,
+      price: item.price,
+    }));
+
+    // 3️⃣ Insert order_items
+    const { error: itemsError } = await supabase
+      .from("order_items")
+      .insert(orderItems);
+
+    if (itemsError) throw itemsError;
+
+    alert("Order placed successfully!");
+
+    // 4️⃣ Clear cart
+    cart = [];
+    localStorage.removeItem("cart");
+    renderCart();
+  } catch (err) {
+    console.error("Error placing order:", err);
+    alert("Something went wrong while placing your order.");
+  }
+});
+
+console.log("📝 Order to insert:", order);
+console.log("📝 Order Items to insert:", orderItems);
