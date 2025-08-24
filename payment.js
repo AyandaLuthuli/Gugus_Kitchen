@@ -1,6 +1,7 @@
 // =============================
 // Supabase Init
 // =============================
+
 const SUPABASE_URL = "https://dqnmbayimyiuqfzdalox.supabase.co"; // replace with your Supabase project URL
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxbm1iYXlpbXlpdXFmemRhbG94Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5OTIwOTYsImV4cCI6MjA3MDU2ODA5Nn0.XPsThMYTgbUX4JU743QhdDwPvVMcPZ1_3OBvMMGW5o4"; // replace with your anon key from Supabase
@@ -72,7 +73,8 @@ document.getElementById("payBtn").addEventListener("click", async () => {
 // Init
 // =============================
 // For now, hardcode logged in user (replace with auth later)
-const userId = 2;
+const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+const userId = loggedInUser?.id || null; // null if guest
 fetchLatestOrder(userId);
 
 // =============================

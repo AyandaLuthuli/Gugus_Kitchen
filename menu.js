@@ -1,6 +1,11 @@
 // =============================
 // Supabase Initialization
 // =============================
+
+const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+const userId = loggedInUser?.id || null; // null if guest
+console.log("Current User ID:", userId);
+
 const SUPABASE_URL = "https://dqnmbayimyiuqfzdalox.supabase.co"; // replace with your Supabase project URL
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxbm1iYXlpbXlpdXFmemRhbG94Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5OTIwOTYsImV4cCI6MjA3MDU2ODA5Nn0.XPsThMYTgbUX4JU743QhdDwPvVMcPZ1_3OBvMMGW5o4"; // replace with your anon key from Supabase
@@ -152,9 +157,6 @@ document.getElementById("checkoutBtn").addEventListener("click", async () => {
     return;
   }
 
-  // TODO: Replace with the actual logged-in user's ID from auth/session
-  const userId = 2; // Example: Nomvula's id from your seed
-
   // Calculate total
   let total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -195,6 +197,7 @@ document.getElementById("checkoutBtn").addEventListener("click", async () => {
     console.error("Error placing order:", err);
     alert("Something went wrong while placing your order.");
   }
+  window.location.href = "payment.html";
 });
 
 console.log("📝 Order to insert:", order);

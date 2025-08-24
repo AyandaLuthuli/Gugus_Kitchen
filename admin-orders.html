@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin – Orders</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f9;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+      }
+      .order-card {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+      }
+      .order-items {
+        margin-left: 15px;
+        margin-bottom: 10px;
+      }
+      .order-items li {
+        font-size: 14px;
+      }
+      .status {
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        text-transform: capitalize;
+      }
+      .pending {
+        background: #ffeb99;
+      }
+      .preparing {
+        background: #99ccff;
+      }
+      .completed {
+        background: #99ff99;
+      }
+      .cancelled {
+        background: #ff9999;
+      }
+      .status-select {
+        padding: 5px;
+        border-radius: 5px;
+      }
+    </style>
+
+    <nav>
+      <!-- <a href="menu.html">Back to Menu</a> -->
+      <a href="menu.html" class="login-nav-btn">Menu</a>
+      <a href="index.html" class="login-nav-btn">Customer Login</a>
+    </nav>
+  </head>
+  <body>
+    <h1>Cashier – View Orders</h1>
+    <div id="ordersContainer"></div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js"></script>
+    <script src="admin-orders.js"></script>
+  </body>
+</html>
