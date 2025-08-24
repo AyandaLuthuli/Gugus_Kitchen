@@ -35,7 +35,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     if (role === "admin") {
       window.location.href = "admin.html";
     } else if (role === "cashier") {
-      window.location.href = "admin-orders.html";
+      window.location.href = "MenuCashier.html";
     } else {
       window.location.href = "menu.html";
     }

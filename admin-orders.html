@@ -11,6 +11,42 @@
         background: #f4f4f9;
         padding: 20px;
       }
+
+      .header-content {
+        max-width: 1200px;
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 2rem;
+      }
+
+      header h1 {
+        color: #e67e22;
+        font-size: 1.8rem;
+      }
+
+      nav {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      nav a {
+        text-decoration: none;
+        color: #555;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      nav a.active {
+        color: #e67e22;
+        font-weight: 600;
+      }
+
+      nav a:hover {
+        color: #e67e22;
+      }
       h1 {
         text-align: center;
         margin-bottom: 20px;
@@ -64,7 +100,12 @@
 
     <nav>
       <!-- <a href="menu.html">Back to Menu</a> -->
-      <a href="menu.html" class="login-nav-btn">Menu</a>
+
+      <button id="loginRedirect" class="login-nav-btn" class="active">
+        Orders
+      </button>
+
+      <a href="MenuCashier.html" class="login-nav-btn">Menu</a>
       <a href="index.html" class="login-nav-btn">Customer Login</a>
     </nav>
   </head>

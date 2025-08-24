@@ -7,6 +7,42 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+      .header-content {
+        max-width: 1200px;
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 2rem;
+      }
+
+      header h1 {
+        color: #e67e22;
+        font-size: 1.8rem;
+      }
+
+      nav {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      nav a {
+        text-decoration: none;
+        color: #555;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      nav a.active {
+        color: #e67e22;
+        font-weight: 600;
+      }
+
+      nav a:hover {
+        color: #e67e22;
+      }
+
       h1,
       h2 {
         color: #e67e22;
@@ -49,13 +85,12 @@
     </style>
   </head>
   <body>
-    <header>
+    <header class="header-content">
       <h1>Admin - Orders</h1>
       <nav>
         <a href="admin.html" class="login-nav-btn">Edit Menu</a>
         <a href="index.html" class="login-nav-btn">inventory</a>
-        <a href="admin.html">Menu Admin</a>
-        <a href="orders.html" class="active">Orders</a>
+        <a href="index.html" class="login-nav-btn">Customer Login</a>
       </nav>
     </header>
 
