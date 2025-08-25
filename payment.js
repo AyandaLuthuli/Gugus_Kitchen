@@ -80,9 +80,9 @@ fetchLatestOrder(userId);
 // =============================
 // Extra Buttons
 // =============================
-document.getElementById("orderAgainBtn").addEventListener("click", () => {
-  window.location.href = "menu.html"; // go back to order page
-});
+// document.getElementById("orderAgainBtn").addEventListener("click", () => {
+//   window.location.href = "menu.html"; // go back to order page
+// });
 
 document.getElementById("logoutBtn").addEventListener("click", () => {
   // If you’re not using Supabase Auth yet, just redirect
