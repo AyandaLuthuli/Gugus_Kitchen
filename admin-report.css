@@ -1,0 +1,134 @@
+/* =============================
+   General Layout
+============================= */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f7fa;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+header {
+  background: #2c3e50;
+  color: white;
+  padding: 1rem 2rem;
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+/* =============================
+   Summary Cards
+============================= */
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 2rem;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 {
+  margin: 0.5rem 0;
+  font-size: 2rem;
+  color: #2c3e50;
+}
+
+.card p {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+/* =============================
+   Charts Section
+============================= */
+.charts {
+  /* display: grid; */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin: 2rem;
+  width: 40%;
+  height: 50%;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  max-width: 200px;
+}
+
+/* =============================
+   Tables
+============================= */
+.tables {
+  margin: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.table-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.table-card h3 {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+thead {
+  background: #2c3e50;
+  color: white;
+}
+
+thead th {
+  text-align: left;
+  padding: 0.6rem;
+}
+
+tbody td {
+  padding: 0.6rem;
+  border-bottom: 1px solid #eee;
+}
+
+tbody tr:hover {
+  background: #f9f9f9;
+}
+
+/* =============================
+   Responsive
+============================= */
+@media (max-width: 768px) {
+  .tables {
+    grid-template-columns: 1fr;
+  }
+}

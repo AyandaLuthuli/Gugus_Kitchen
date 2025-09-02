@@ -386,11 +386,10 @@ async function fetchInventory() {
   inventory.forEach((item) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${item.name}</td>
-      <td>${item.category}</td>
-      <td>${item.unit}</td>
-      <td>${item.current_quantity}</td>
-      <td>${item.reorder_level}</td>
+      <td>${item.item_name}</td>
+        <td>${item.unit_of_measure}</td>
+        <td>${item.current_quantity}</td>
+        <td>${item.reorder_threshold}</td>
       <td>
         <button onclick="editItem(${item.id}, '${item.name}', ${item.current_quantity})">Edit</button>
         <button onclick="deleteItem(${item.id})">Delete</button>
