@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Reports</title>
+    <link rel="stylesheet" href="admin-report.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <h1>📊 Admin Reports Dashboard</h1>
+
+    <!-- Summary Cards -->
+    <div class="summary">
+      <div class="card">
+        <h3>Total Users</h3>
+        <p id="totalUsers">0</p>
+      </div>
+      <div class="card">
+        <h3>Admins</h3>
+        <p id="totalAdmins">0</p>
+      </div>
+      <div class="card">
+        <h3>Cashiers</h3>
+        <p id="totalCashiers">0</p>
+      </div>
+      <div class="card">
+        <h3>Customers</h3>
+        <p id="totalCustomers">0</p>
+      </div>
+      <div class="card">
+        <h3>Total Orders</h3>
+        <p id="totalOrders">0</p>
+      </div>
+      <div class="card">
+        <h3>Total Sales (R)</h3>
+        <p id="totalSales">0</p>
+      </div>
+      <div class="card">
+        <h3>Inventory Items</h3>
+        <p id="totalItems">0</p>
+      </div>
+      <div class="card">
+        <h3>Below Reorder</h3>
+        <p id="belowReorder">0</p>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <h2>Charts</h2>
+    <div class="charts">
+      <canvas id="usersChart"></canvas>
+      <canvas id="paymentChart"></canvas>
+      <canvas id="inventoryChart"></canvas>
+    </div>
+
+    <!-- Tables -->
+    <h2>Inventory Table</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Unit</th>
+          <th>Quantity</th>
+          <th>Reorder Level</th>
+        </tr>
+      </thead>
+      <tbody id="inventoryTableBody"></tbody>
+    </table>
+
+    <h2>Recent Orders</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>User</th>
+          <th>Total</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="ordersTableBody"></tbody>
+    </table>
+
+    <script src="admin-report.js"></script>
+  </body>
+</html>
