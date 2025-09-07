@@ -47,5 +47,5 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 // Guest access
 document.getElementById("guestBtn").addEventListener("click", () => {
   localStorage.removeItem("loggedInUser");
-  window.location.href = "Guestmenu.html";
+  window.location.href = "guestmenu.html";
 });
