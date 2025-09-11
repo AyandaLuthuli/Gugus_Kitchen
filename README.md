@@ -2,7 +2,7 @@
 
 A full-stack web-based food ordering system built for **Gugu’s Kitchen**, a small fast-food container in East London. This system allows admins, cashiers, and customers to manage and place orders efficiently with real-time updates and automated inventory tracking.
 
-🚀 Live Demo : Coming soon…
+🚀 Live Demo :https://ayandaluthuli.github.io/Gugus_Kitchen/
 
 
 ## woking on 

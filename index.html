@@ -24,11 +24,23 @@
             <label for="email">Email</label>
             <input type="email" id="email" name="email" required />
           </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required />
+          <div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password" required />
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+            <br />
+            <br />
           </div>
-          <button type="submit" class="login-btn">Login</button>
+          <center>
+            <a
+              href="signup.html"
+              class="login-btn"
+              style="background-color: rgb(206, 39, 39); text-decoration: none"
+              >Sign Up</a
+            >
+          </center>
           <div class="role-selection">
             <p>Login as:</p>
             <div class="role-options">
@@ -46,7 +58,10 @@
         </form>
         <div class="guest-option">
           <p>Continue as guest to view menu</p>
-          <button id="guestBtn" class="guest-btn">View Menu</button>
+
+          <a href="guestmenu.html"
+            ><button class="guest-btn">View Menu</button></a
+          >
         </div>
       </div>
     </div>

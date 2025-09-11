@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gugu's Kitchen - Sign Up</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="signup_styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body>
+    <div class="signup-container">
+      <div class="signup-header">
+        <h1>Gugu's Kitchen</h1>
+        <p>Create your account</p>
+      </div>
+
+      <div class="signup-form">
+        <form id="signupForm">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required />
+            <div id="usernameError" class="error-message"></div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required />
+            <div id="emailError" class="error-message"></div>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" required />
+            <div id="phoneError" class="error-message"></div>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="password-container">
+              <input type="password" id="password" name="password" required />
+              <span class="toggle-password" id="togglePassword">
+                <i class="far fa-eye"></i>
+              </span>
+            </div>
+            <div class="password-strength">
+              <div class="password-strength-bar" id="passwordStrengthBar"></div>
+            </div>
+            <div class="password-strength-text" id="passwordStrengthText">
+              Password strength
+            </div>
+            <div id="passwordError" class="error-message"></div>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <div class="password-container">
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                required
+              />
+              <span class="toggle-password" id="toggleConfirmPassword">
+                <i class="far fa-eye"></i>
+              </span>
+            </div>
+            <div id="confirmPasswordError" class="error-message"></div>
+          </div>
+          <div class="form-group">
+            <label for="role">Account Type</label>
+            <select id="role" name="role" required>
+              <option value="customer">Customer</option>
+              <option value="cashier">Cashier</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <button type="submit" class="signup-btn" id="signupButton">
+            Sign Up
+          </button>
+          <div id="successMessage" class="success-message">
+            Account created successfully! Redirecting to login...
+          </div>
+        </form>
+        <div class="login-redirect">
+          <p>Already have an account? <a href="index.html">Login here</a></p>
+        </div>
+      </div>
+    </div>
+
+    <script src="signup_script.js"></script>
+  </body>
+</html>

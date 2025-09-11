@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gugu's Kitchen - Menu</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      #signup-btn {
+        padding: 0.5rem 1rem;
+        background-color: #e67e22;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <h1>Gugu's Kitchen</h1>
+        <nav>
+          <a href="#" class="active">Menu</a>
+          <a href="AboutUS.html">About Us</a>
+          <a href="index.html" class="login-nav-btn">Staff Login</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="menu-categories">
+        <div class="category-tabs">
+          <button class="tab-btn active" data-category="all">All Items</button>
+          <button class="tab-btn" data-category="starters">Starters</button>
+          <button class="tab-btn" data-category="mains">Main Dishes</button>
+          <button class="tab-btn" data-category="sides">Sides</button>
+          <button class="tab-btn" data-category="desserts">Desserts</button>
+          <button class="tab-btn" data-category="drinks">Drinks</button>
+        </div>
+
+        <div class="menu-items" id="menuItems">
+          <!-- Items will be loaded dynamically -->
+        </div>
+      </section>
+    </main>
+    <section id="cartSection">
+      <h2>Your Cart</h2>
+      <div id="cartItems"></div>
+      <p id="cartTotal">Total: R0.00</p>
+      <!-- <button class="login-nav-btn">Sign up</button> -->
+      <!-- <a href="signup.html">Sign up</a> -->
+      <a href="signup.html"
+        ><button id="signup-btn" onclick="window.location.href='signup.html'">
+          Sign Up
+        </button></a
+      >
+    </section>
+    <footer>
+      <p>© 2023 Gugu's Kitchen. All rights reserved.</p>
+    </footer>
+
+    <script src="menu.js"></script>
+  </body>
+</html>
