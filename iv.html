@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gugu's Kitchen - Inventory Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        nav a.active {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .inventory-controls {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .control-buttons {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .btn.primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn.secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .search-box {
+            display: flex;
+            margin-left: auto;
+        }
+        
+        .search-box input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .search-box button {
+            padding: 0.5rem 1rem;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        
+        .filter-options {
+            margin-top: 1rem;
+        }
+        
+        .inventory-list {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .inventory-header {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr 1fr 1fr 1fr;
+            background: #34495e;
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+        }
+        
+        .inventory-item {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr 1fr 1fr 1fr;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+        
+        .inventory-item:last-child {
+            border-bottom: none;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .status-low {
+            background: #ffeaa7;
+            color: #d35400;
+        }
+        
+        .status-ok {
+            background: #d5f5e3;
+            color: #27ae60;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        
+        .action-btn.delete {
+            color: #e74c3c;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+            background: #ecf0f1;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #7f8c8d;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem;
+            border-radius: 4px;
+            color: white;
+            z-index: 1100;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        
+        .notification.success {
+            background: #27ae60;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .notification.error {
+            background: #e74c3c;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .connection-status {
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .connection-status.connected {
+            background-color: #d5f5e3;
+            color: #27ae60;
+        }
+        
+        .connection-status.error {
+            background-color: #ffeaa7;
+            color: #d35400;
+        }
+        
+        .debug-info {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .toggle-debug {
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Gugu's Kitchen</h1>
+            <nav>
+                <a href="admin.html">Menu</a>
+                <a href="inventory.html" class="active">Inventory</a>
+                <a href="reports.html">Reports</a>
+                <button id="logoutBtn" class="logout-btn">Logout</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="inventory-container">
+        <div id="connectionStatus" class="connection-status"></div>
+        
+        <button id="toggleDebug" class="toggle-debug">Show Debug Info</button>
+        <div id="debugInfo" class="debug-info">
+            <h4>Supabase Connection Details:</h4>
+            <div id="debugContent"></div>
+        </div>
+        
+        <section class="inventory-controls">
+            <h2>Inventory Management</h2>
+            <div class="control-buttons">
+                <button id="addItemBtn" class="btn primary">Add New Item</button>
+                <button id="refreshBtn" class="btn secondary">Refresh</button>
+                <div class="search-box">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search inventory..."
+                    />
+                    <button id="searchBtn">Search</button>
+                </div>
+            </div>
+            <div class="filter-options">
+                <label>
+                    <input type="checkbox" id="lowStockFilter" checked />
+                    Show Low Stock Items Only
+                </label>
+            </div>
+        </section>
+
+        <section class="inventory-list">
+            <div class="inventory-header">
+                <div class="header-item">ID</div>
+                <div class="header-item">Item Name</div>
+                <div class="header-item">Current Stock</div>
+                <div class="header-item">Unit</div>
+                <div class="header-item">Reorder Level</div>
+                <div class="header-item">Actions</div>
+            </div>
+            <div class="inventory-items" id="inventoryItems">
+                <div class="loading">Loading inventory...</div>
+            </div>
+        </section>
+
+        <!-- Add Item Modal -->
+        <div id="addItemModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3>Add New Inventory Item</h3>
+                <form id="addItemForm">
+                    <div class="form-group">
+                        <label for="itemName">Item Name</label>
+                        <input type="text" id="itemName" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="initialQuantity">Initial Quantity</label>
+                        <input type="number" id="initialQuantity" step="0.01" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="unitOfMeasure">Unit of Measure</label>
+                        <select id="unitOfMeasure" required>
+                            <option value="units">Units</option>
+                            <option value="packets">Packets</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reorderLevel">Reorder Level</label>
+                        <input type="number" id="reorderLevel" step="0.01" required />
+                    </div>
+                    <button type="submit" class="btn primary">Add Item</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Update Stock Modal -->
+        <div id="updateStockModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h3>Update Stock Level</h3>
+                <form id="updateStockForm">
+                    <input type="hidden" id="updateItemId" />
+                    <div class="form-group">
+                        <label for="currentStock">Current Stock</label>
+                        <input type="number" id="currentStock" step="0.01" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label for="adjustmentType">Adjustment Type</label>
+                        <select id="adjustmentType">
+                            <option value="add">Add Stock</option>
+                            <option value="subtract">Subtract Stock</option>
+                            <option value="set">Set Exact Amount</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="adjustmentAmount">Amount</label>
+                        <input type="number" id="adjustmentAmount" step="0.01" required />
+                    </div>
+                    <button type="submit" class="btn primary">Update Stock</button>
+                </form>
+            </div>
+        </div>
+        
+        <section>
+            <h3>Inventory List</h3>
+            <table border="1" width="100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Reorder Level</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTableBody">
+                    <tr>
+                        <td colspan="7" style="text-align: center;">Loading data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2023 Gugu's Kitchen. All rights reserved.</p>
+    </footer>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Initialize Supabase with your credentials
+        const SUPABASE_URL = 'https://dqnmbayimyiuqfzdalox.supabase.co'; 
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxbm1iYXlpbXlpdXFmemRhbG94Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5OTIwOTYsImV4cCI6MjA3MDU2ODA5Nn0.XPsThMYTgbUX4JU743QhdDwPvVMcPZ1_3OBvMMGW5o4';
+        
+        let supabase;
+        try {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            document.getElementById('connectionStatus').textContent = 'Connected to Supabase';
+            document.getElementById('connectionStatus').className = 'connection-status connected';
+        } catch (error) {
+            document.getElementById('connectionStatus').textContent = 'Error connecting to Supabase: ' + error.message;
+            document.getElementById('connectionStatus').className = 'connection-status error';
+            console.error('Supabase connection error:', error);
+        }
+        
+        // Debug info
+        document.getElementById('toggleDebug').addEventListener('click', function() {
+            const debugInfo = document.getElementById('debugInfo');
+            debugInfo.style.display = debugInfo.style.display === 'none' ? 'block' : 'none';
+            this.textContent = debugInfo.style.display === 'none' ? 'Show Debug Info' : 'Hide Debug Info';
+            
+            document.getElementById('debugContent').innerHTML = `
+                <p><strong>URL:</strong> ${SUPABASE_URL}</p>
+                <p><strong>API Key:</strong> ${SUPABASE_ANON_KEY.substring(0, 20)}...</p>
+                <p><strong>Client:</strong> ${supabase ? 'Initialized' : 'Not initialized'}</p>
+            `;
+        });
+        
+        // DOM elements
+        const inventoryItemsContainer = document.getElementById('inventoryItems');
+        const inventoryTableBody = document.getElementById('inventoryTableBody');
+        const addItemBtn = document.getElementById('addItemBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const addItemModal = document.getElementById('addItemModal');
+        const updateStockModal = document.getElementById('updateStockModal');
+        const closeModalButtons = document.querySelectorAll('.close-modal');
+        const addItemForm = document.getElementById('addItemForm');
+        const updateStockForm = document.getElementById('updateStockForm');
+        const lowStockFilter = document.getElementById('lowStockFilter');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const notification = document.getElementById('notification');
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            if (supabase) {
+                loadInventoryItems();
+            } else {
+                inventoryItemsContainer.innerHTML = '<div class="loading">Error: Could not connect to database</div>';
+                inventoryTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Error: Could not connect to database</td></tr>';
+            }
+            setupEventListeners();
+        });
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Add item button
+            addItemBtn.addEventListener('click', openAddItemModal);
+            
+            // Refresh button
+            refreshBtn.addEventListener('click', loadInventoryItems);
+            
+            // Close modal buttons
+            closeModalButtons.forEach(button => {
+                button.addEventListener('click', closeModals);
+            });
+            
+            // Add item form submission
+            addItemForm.addEventListener('submit', handleAddItem);
+            
+            // Update stock form submission
+            updateStockForm.addEventListener('submit', handleUpdateStock);
+            
+            // Low stock filter
+            lowStockFilter.addEventListener('change', loadInventoryItems);
+            
+            // Search functionality
+            searchBtn.addEventListener('click', handleSearch);
+            searchInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    handleSearch();
+                }
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === addItemModal) {
+                    closeModals();
+                }
+                if (event.target === updateStockModal) {
+                    closeModals();
+                }
+            });
+            
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                alert('Logout functionality would be implemented here.');
+            });
+        }
+
+        // Load inventory items from Supabase
+        async function loadInventoryItems() {
+            try {
+                inventoryItemsContainer.innerHTML = '<div class="loading">Loading inventory...</div>';
+                inventoryTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Loading data...</td></tr>';
+                
+                // Get filter status
+                const showLowStockOnly = lowStockFilter.checked;
+                
+                // Get search term
+                const searchTerm = searchInput.value.toLowerCase();
+                
+                // Check if Supabase is initialized
+                if (!supabase) {
+                    throw new Error('Supabase client not initialized');
+                }
+                
+                // Fetch data from Supabase
+                let query = supabase
+                    .from('inventory')
+                    .select('*')
+                    .order('id', { ascending: true });
+                
+                // Execute query
+                const { data: inventoryItems, error } = await query;
+                
+                if (error) {
+                    throw error;
+                }
+                
+                // If no data returned, show sample data for demonstration
+                if (!inventoryItems || inventoryItems.length === 0) {
+                    inventoryItems = [
+                        { id: 1, name: "Lettuce", current_quantity: 0.00, unit_of_measure: "units", market_threshold: 5.00, last_updated: "2025-08-12 09:58:43.999203+00" },
+                        { id: 2, name: "Cucumber", current_quantity: 0.00, unit_of_measure: "units", market_threshold: 5.00, last_updated: "2025-08-12 09:58:43.999203+00" },
+                        { id: 3, name: "Chips", current_quantity: 0.00, unit_of_measure: "packets", market_threshold: 5.00, last_updated: "2025-08-12 09:58:43.999203+00" },
+                        { id: 6, name: "Burger party", current_quantity: 0.00, unit_of_measure: "units", market_threshold: 5.00, last_updated: "2025-08-12 09:58:43.999203+00" },
+                        { id: 7, name: "Russian", current_quantity: 0.00, unit_of_measure: "units", market_threshold: 5.00, last_updated: "2025-08-12 09:58:43.999203+00" },
+                        { id: 8, name: "Smoked ham", current_quantity: 0.00, unit_of_measure: "units", market_threshold: 5.00, last_updated: "2025-08-12 09:58:43.999203+00" },
+                        { id: 9, name: "Pork rib party", current_quantity: 0.00, unit_of_measure: "units", market_threshold: 5.00, last_updated: "2025-08-12 09:58:43.999203+00" }
+                    ];
+                }
+                
+                // Filter items based on criteria
+                const filteredItems = inventoryItems.filter(item => {
+                    const isLowStock = item.current_quantity <= item.market_threshold;
+                    const matchesSearch = item.name.toLowerCase().includes(searchTerm);
+                    
+                    if (showLowStockOnly) {
+                        return isLowStock && matchesSearch;
+                    }
+                    return matchesSearch;
+                });
+                
+                // Display items in both views
+                displayInventoryItems(filteredItems);
+                displayInventoryTable(filteredItems);
+                
+            } catch (error) {
+                console.error('Error loading inventory:', error);
+                showNotification('Error loading inventory: ' + error.message, 'error');
+                inventoryItemsContainer.innerHTML = '<div class="loading">Error loading inventory. Please try again.</div>';
+                inventoryTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Error loading data.</td></tr>';
+            }
+        }
+
+        // Display inventory items in the card view
+        function displayInventoryItems(items) {
+            if (items.length === 0) {
+                inventoryItemsContainer.innerHTML = '<div class="loading">No inventory items found.</div>';
+                return;
+            }
+            
+            inventoryItemsContainer.innerHTML = '';
+            
+            items.forEach(item => {
+                const isLowStock = item.current_quantity <= item.market_threshold;
+                
+                const itemElement = document.createElement('div');
+                itemElement.className = 'inventory-item';
+                itemElement.innerHTML = `
+                    <div>${item.id}</div>
+                    <div>${item.name}</div>
+                    <div>${item.current_quantity}</div>
+                    <div>${item.unit_of_measure}</div>
+                    <div>${item.market_threshold}</div>
+                    <div>
+                        <button class="action-btn update-stock" data-id="${item.id}">Update Stock</button>
+                        <button class="action-btn delete" data-id="${item.id}">Delete</button>
+                    </div>
+                `;
+                
+                inventoryItemsContainer.appendChild(itemElement);
+            });
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.update-stock').forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    openUpdateStockModal(itemId);
+                });
+            });
+            
+            document.querySelectorAll('.action-btn.delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    deleteInventoryItem(itemId);
+                });
+            });
+        }
+
+        // Display inventory items in the table view
+        function displayInventoryTable(items) {
+            if (items.length === 0) {
+                inventoryTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No inventory items found.</td></tr>';
+                return;
+            }
+            
+            inventoryTableBody.innerHTML = '';
+            
+            items.forEach(item => {
+                const isLowStock = item.current_quantity <= item.market_threshold;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.name}</td>
+                    <td>${item.current_quantity}</td>
+                    <td>${item.unit_of_measure}</td>
+                    <td>${item.market_threshold}</td>
+                    <td>${isLowStock ? '⚠ Low Stock' : 'In Stock'}</td>
+                    <td>
+                        <button class="action-btn update-stock" data-id="${item.id}">Update</button>
+                        <button class="action-btn delete" data-id="${item.id}">Delete</button>
+                    </td>
+                `;
+                
+                if (isLowStock) {
+                    row.style.backgroundColor = '#fff3cd';
+                }
+                
+                inventoryTableBody.appendChild(row);
+            });
+            
+            // Add event listeners to action buttons in the table
+            document.querySelectorAll('#inventoryTableBody .update-stock').forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    openUpdateStockModal(itemId);
+                });
+            });
+            
+            document.querySelectorAll('#inventoryTableBody .action-btn.delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-id');
+                    deleteInventoryItem(itemId);
+                });
+            });
+        }
+
+        // Open Add Item Modal
+        function openAddItemModal() {
+            addItemModal.style.display = 'flex';
+        }
+
+        // Open Update Stock Modal
+        async function openUpdateStockModal(itemId) {
+            try {
+                // Check if Supabase is initialized
+                if (!supabase) {
+                    throw new Error('Supabase client not initialized');
+                }
+                
+                // Fetch the current item data from Supabase
+                const { data: item, error } = await supabase
+                    .from('inventory')
+                    .select('*')
+                    .eq('id', itemId)
+                    .single();
+                
+                if (error) {
+                    throw error;
+                }
+                
+                if (item) {
+                    document.getElementById('updateItemId').value = item.id;
+                    document.getElementById('currentStock').value = item.current_quantity;
+                    updateStockModal.style.display = 'flex';
+                }
+            } catch (error) {
+                console.error('Error fetching item:', error);
+                showNotification('Error fetching item: ' + error.message, 'error');
+            }
+        }
+
+        // Close all modals
+        function closeModals() {
+            addItemModal.style.display = 'none';
+            updateStockModal.style.display = 'none';
+            addItemForm.reset();
+            updateStockForm.reset();
+        }
+
+        // Handle Add Item form submission
+        async function handleAddItem(event) {
+            event.preventDefault();
+            
+            try {
+                // Check if Supabase is initialized
+                if (!supabase) {
+                    throw new Error('Supabase client not initialized');
+                }
+                
+                const newItem = {
+                    name: document.getElementById('itemName').value,
+                    current_quantity: parseFloat(document.getElementById('initialQuantity').value),
+                    unit_of_measure: document.getElementById('unitOfMeasure').value,
+                    market_threshold: parseFloat(document.getElementById('reorderLevel').value),
+                    last_updated: new Date().toISOString()
+                };
+                
+                // Insert the new item into Supabase
+                const { data, error } = await supabase
+                    .from('inventory')
+                    .insert([newItem])
+                    .select();
+                
+                if (error) {
+                    throw error;
+                }
+                
+                loadInventoryItems();
+                closeModals();
+                
+                showNotification('Item added successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error adding item:', error);
+                showNotification('Error adding item: ' + error.message, 'error');
+            }
+        }
+
+        // Handle Update Stock form submission
+        async function handleUpdateStock(event) {
+            event.preventDefault();
+            
+            try {
+                // Check if Supabase is initialized
+                if (!supabase) {
+                    throw new Error('Supabase client not initialized');
+                }
+                
+                const itemId = document.getElementById('updateItemId').value;
+                const adjustmentType = document.getElementById('adjustmentType').value;
+                const adjustmentAmount = parseFloat(document.getElementById('adjustmentAmount').value);
+                
+                // First, get the current item data
+                const { data: currentItem, error: fetchError } = await supabase
+                    .from('inventory')
+                    .select('*')
+                    .eq('id', itemId)
+                    .single();
+                
+                if (fetchError) {
+                    throw fetchError;
+                }
+                
+                let newQuantity = currentItem.current_quantity;
+                
+                switch(adjustmentType) {
+                    case 'add':
+                        newQuantity += adjustmentAmount;
+                        break;
+                    case 'subtract':
+                        newQuantity = Math.max(0, newQuantity - adjustmentAmount);
+                        break;
+                    case 'set':
+                        newQuantity = adjustmentAmount;
+                        break;
+                }
+                
+                // Update the item in Supabase
+                const { data, error } = await supabase
+                    .from('inventory')
+                    .update({
+                        current_quantity: newQuantity,
+                        last_updated: new Date().toISOString()
+                    })
+                    .eq('id', itemId)
+                    .select();
+                
+                if (error) {
+                    throw error;
+                }
+                
+                loadInventoryItems();
+                closeModals();
+                
+                showNotification('Stock updated successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error updating stock:', error);
+                showNotification('Error updating stock: ' + error.message, 'error');
+            }
+        }
+
+        // Delete inventory item
+        async function deleteInventoryItem(itemId) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                try {
+                    // Check if Supabase is initialized
+                    if (!supabase) {
+                        throw new Error('Supabase client not initialized');
+                    }
+                    
+                    const { error } = await supabase
+                        .from('inventory')
+                        .delete()
+                        .eq('id', itemId);
+                    
+                    if (error) {
+                        throw error;
+                    }
+                    
+                    loadInventoryItems();
+                    showNotification('Item deleted successfully!', 'success');
+                    
+                } catch (error) {
+                    console.error('Error deleting item:', error);
+                    showNotification('Error deleting item: ' + error.message, 'error');
+                }
+            }
+        }
+
+        // Handle search
+        function handleSearch() {
+            loadInventoryItems();
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            
+            setTimeout(() => {
+                notification.className = 'notification';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
