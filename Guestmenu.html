@@ -9,21 +9,7 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
       rel="stylesheet"
     />
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-      #signup-btn {
-        padding: 0.5rem 1rem;
-        background-color: #e67e22;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        width: 100%;
-      }
-    </style>
   </head>
   <body>
     <header>
@@ -53,18 +39,18 @@
         </div>
       </section>
     </main>
+
     <section id="cartSection">
       <h2>Your Cart</h2>
       <div id="cartItems"></div>
       <p id="cartTotal">Total: R0.00</p>
-      <!-- <button class="login-nav-btn">Sign up</button> -->
-      <!-- <a href="signup.html">Sign up</a> -->
-      <a href="signup.html"
-        ><button id="signup-btn" onclick="window.location.href='signup.html'">
-          Sign Up
-        </button></a
-      >
+
+      <a href="signup.html">
+        <button class ="signup-btn" id="signup-btn">Sign Up</button>
+      
+      </a>
     </section>
+
     <footer>
       <p>© 2023 Gugu's Kitchen. All rights reserved.</p>
     </footer>
