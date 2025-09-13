@@ -197,7 +197,7 @@ document.getElementById("checkoutBtn").addEventListener("click", async () => {
     console.error("Error placing order:", err);
     alert("Something went wrong while placing your order.");
   }
-  window.location.href = "paymentsInventory.html";
+  window.location.href = "PayAdvanced.html";
 });
 
 console.log("📝 Order to insert:", order);
