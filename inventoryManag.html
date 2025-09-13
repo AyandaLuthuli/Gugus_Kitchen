@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gugu's Kitchen - Menu with Inventory Deduction</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      :root {
+        --primary: #ff7b00;
+        --secondary: #333;
+        --accent: #ffd166;
+        --light: #f8f9fa;
+        --dark: #343a40;
+        --success: #28a745;
+        --danger: #dc3545;
+        --warning: #ffc107;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        background-color: var(--primary);
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin-bottom: 15px;
+      }
+
+      .menu-container {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+      }
+
+      .menu-section {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+      }
+
+      .cart-section {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        position: sticky;
+        top: 20px;
+        height: fit-content;
+      }
+
+      .tabs {
+        display: flex;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .tab-btn {
+        padding: 10px 20px;
+        cursor: pointer;
+        border: none;
+        background: none;
+        border-bottom: 3px solid transparent;
+      }
+
+      .tab-btn.active {
+        border-bottom: 3px solid var(--primary);
+        font-weight: bold;
+      }
+
+      .menu-items {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+      }
+
+      .menu-item {
+        border: 1px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.2s;
+      }
+
+      .menu-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .item-image {
+        height: 150px;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .item-info {
+        padding: 15px;
+      }
+
+      .item-price {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+      }
+
+      .price {
+        font-weight: bold;
+        color: var(--primary);
+      }
+
+      .order-btn {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .order-btn:hover {
+        background-color: #e06a00;
+      }
+
+      .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .remove-btn {
+        background-color: var(--danger);
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .cart-total {
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-top: 15px;
+        text-align: right;
+      }
+
+      .checkout-btn {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background-color: var(--success);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+      }
+
+      .checkout-btn:hover {
+        background-color: #218838;
+      }
+
+      .checkout-btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 4px;
+        z-index: 1000;
+        display: none;
+      }
+
+      .notification.success {
+        background-color: var(--success);
+        color: white;
+        display: block;
+      }
+
+      .notification.error {
+        background-color: var(--danger);
+        color: white;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Gugu's Kitchen</h1>
+        <div id="userInfo">
+          <!-- User info will be populated here -->
+        </div>
+      </header>
+
+      <div class="menu-container">
+        <div class="menu-section">
+          <h2>Menu</h2>
+          <div class="tabs">
+            <button class="tab-btn active" data-category="all">
+              All Items
+            </button>
+            <button class="tab-btn" data-category="starters">Starters</button>
+            <button class="tab-btn" data-category="kota">Kota</button>
+            <button class="tab-btn" data-category="mains">Mains</button>
+            <button class="tab-btn" data-category="drinks">Drinks</button>
+            <button class="tab-btn" data-category="sides">Sides</button>
+          </div>
+
+          <div class="menu-items" id="menuItems">
+            <!-- Menu items will be populated here -->
+          </div>
+        </div>
+
+        <div class="cart-section">
+          <h2>Your Cart</h2>
+          <div id="cartItems">
+            <!-- Cart items will be populated here -->
+          </div>
+          <div class="cart-total" id="cartTotal">Total: R0.00</div>
+          <button class="checkout-btn" id="checkoutBtn">Checkout</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+      // =============================
+      // Supabase Initialization
+      // =============================
+      const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+      const userId = loggedInUser?.id || null;
+      console.log("Current User ID:", userId);
+
+      const SUPABASE_URL = "https://dqnmbayimyiuqfzdalox.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxbm1iYXlpbXlpdXFmemRhbG94Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5OTIwOTYsImV4cCI6MjA3MDU2ODA5Nn0.XPsThMYTgbUX4JU743QhdDwPvVMcPZ1_3OBvMMGW5o4";
+      const supabase = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+      // =============================
+      // Global State
+      // =============================
+      let menuData = [];
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      let inventoryItems = [];
+
+      // =============================
+      // Fetch Menu Items
+      // =============================
+      async function fetchMenu() {
+        const { data, error } = await supabase
+          .from("menu")
+          .select("*")
+          .order("id", { ascending: true });
+
+        if (error) {
+          console.error("Error fetching menu:", error);
+          return;
+        }
+
+        menuData = data;
+        renderMenuItems(menuData);
+      }
+
+      // =============================
+      // Fetch Inventory Items
+      // =============================
+      async function fetchInventory() {
+        const { data, error } = await supabase.from("inventory").select("*");
+
+        if (error) {
+          console.error("Error fetching inventory:", error);
+          return;
+        }
+
+        inventoryItems = data;
+      }
+
+      // =============================
+      // Extract Ingredients from Description
+      // =============================
+      function extractIngredients(description) {
+        if (!description) return [];
+
+        // Common ingredients to look for
+        const commonIngredients = [
+          "lettuce",
+          "cucumber",
+          "chips",
+          "burger patty",
+          "cheese",
+          "sauces",
+          "russian",
+          "egg",
+          "smoked ham",
+          "pork rib patty",
+          "burger",
+          "pork rib",
+          "gwinya",
+          "bread",
+        ];
+
+        const foundIngredients = [];
+        const lowerDescription = description.toLowerCase();
+
+        commonIngredients.forEach((ingredient) => {
+          if (lowerDescription.includes(ingredient)) {
+            foundIngredients.push(ingredient);
+          }
+        });
+
+        return foundIngredients;
+      }
+
+      // =============================
+      // Find Inventory Item by Name
+      // =============================
+      function findInventoryItem(ingredientName) {
+        return inventoryItems.find((item) =>
+          item.name.toLowerCase().includes(ingredientName.toLowerCase())
+        );
+      }
+
+      // =============================
+      // Deduct Ingredients from Inventory
+      // =============================
+      async function deductIngredientsFromInventory(orderId) {
+        try {
+          // Get order items with menu descriptions
+          const { data: orderItems, error: itemsError } = await supabase
+            .from("order_items")
+            .select(
+              `
+                        menu_id,
+                        quantity,
+                        menu:menu_id (description)
+                    `
+            )
+            .eq("order_id", orderId);
+
+          if (itemsError) throw itemsError;
+
+          // Process each order item
+          for (const item of orderItems) {
+            const ingredients = extractIngredients(item.menu.description);
+
+            // Deduct each ingredient from inventory
+            for (const ingredient of ingredients) {
+              const inventoryItem = findInventoryItem(ingredient);
+
+              if (inventoryItem) {
+                // Deduct based on quantity (simplified: 1 unit per menu item)
+                const deductionAmount = item.quantity;
+
+                const { error: updateError } = await supabase
+                  .from("inventory")
+                  .update({
+                    current_quantity: Math.max(
+                      0,
+                      inventoryItem.current_quantity - deductionAmount
+                    ),
+                    last_updated: new Date().toISOString(),
+                  })
+                  .eq("id", inventoryItem.id);
+
+                if (updateError) {
+                  console.error(
+                    `Error updating ${inventoryItem.name}:`,
+                    updateError
+                  );
+                } else {
+                  console.log(
+                    `Deducted ${deductionAmount} ${inventoryItem.name} from inventory`
+                  );
+                }
+              }
+            }
+          }
+
+          return true;
+        } catch (error) {
+          console.error("Error deducting inventory:", error);
+          return false;
+        }
+      }
+
+      // =============================
+      // Render Menu Items
+      // =============================
+      function renderMenuItems(items) {
+        const menuItemsContainer = document.getElementById("menuItems");
+        menuItemsContainer.innerHTML = "";
+
+        items.forEach((item) => {
+          const itemElement = document.createElement("div");
+          itemElement.className = "menu-item";
+          itemElement.innerHTML = `
+                    <div class="item-image" style="background-image: url('${
+                      item.image
+                    }')"></div>
+                    <div class="item-info">
+                        <h3>${item.name}</h3>
+                        <p>${item.description || ""}</p>
+                        <div class="item-price">
+                            <span class="price">R${parseFloat(
+                              item.price
+                            ).toFixed(2)}</span>
+                            <button class="order-btn" data-id="${
+                              item.id
+                            }">Add to Cart</button>
+                        </div>
+                    </div>
+                `;
+          menuItemsContainer.appendChild(itemElement);
+        });
+
+        // Add to cart button listeners
+        document.querySelectorAll(".order-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const id = parseInt(e.target.getAttribute("data-id"));
+            addToCart(id);
+          });
+        });
+      }
+
+      // =============================
+      // Cart Functions
+      // =============================
+      function addToCart(id) {
+        const item = menuData.find((i) => i.id === id);
+        if (!item) return;
+
+        const existing = cart.find((c) => c.id === id);
+        if (existing) {
+          existing.quantity++;
+        } else {
+          cart.push({ ...item, quantity: 1 });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        renderCart();
+      }
+
+      function renderCart() {
+        const cartContainer = document.getElementById("cartItems");
+        const totalContainer = document.getElementById("cartTotal");
+
+        cartContainer.innerHTML = "";
+        let total = 0;
+
+        cart.forEach((item) => {
+          total += item.price * item.quantity;
+          const div = document.createElement("div");
+          div.className = "cart-item";
+          div.innerHTML = `
+                    <span>${item.name} (x${item.quantity})</span>
+                    <span>R${(item.price * item.quantity).toFixed(2)}</span>
+                    <button class="remove-btn" data-id="${
+                      item.id
+                    }">Remove</button>
+                `;
+          cartContainer.appendChild(div);
+        });
+
+        totalContainer.textContent = `Total: R${total.toFixed(2)}`;
+
+        // Remove button listeners
+        document.querySelectorAll(".remove-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const id = parseInt(e.target.getAttribute("data-id"));
+            removeFromCart(id);
+          });
+        });
+      }
+
+      function removeFromCart(id) {
+        cart = cart.filter((item) => item.id !== id);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        renderCart();
+      }
+
+      // =============================
+      // Category Filtering
+      // =============================
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".tab-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          const category = btn.getAttribute("data-category");
+          if (category === "all") {
+            renderMenuItems(menuData);
+          } else {
+            renderMenuItems(
+              menuData.filter((item) => item.category === category)
+            );
+          }
+        });
+      });
+
+      // =============================
+      // Checkout Logic with Inventory Deduction
+      // =============================
+      document
+        .getElementById("checkoutBtn")
+        .addEventListener("click", async () => {
+          if (cart.length === 0) {
+            alert("Your cart is empty!");
+            return;
+          }
+
+          // Calculate total
+          let total = cart.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+          );
+
+          try {
+            // 1️⃣ Insert into orders
+            const { data: orderData, error: orderError } = await supabase
+              .from("orders")
+              .insert([{ user_id: userId, status: "pending", total }])
+              .select()
+              .single();
+
+            if (orderError) throw orderError;
+
+            const orderId = orderData.id;
+
+            // 2️⃣ Prepare order_items
+            const orderItems = cart.map((item) => ({
+              order_id: orderId,
+              menu_id: item.id,
+              quantity: item.quantity,
+              price: item.price,
+            }));
+
+            // 3️⃣ Insert order_items
+            const { error: itemsError } = await supabase
+              .from("order_items")
+              .insert(orderItems);
+
+            if (itemsError) throw itemsError;
+
+            // 4️⃣ Deduct ingredients from inventory
+            const inventorySuccess = await deductIngredientsFromInventory(
+              orderId
+            );
+
+            if (!inventorySuccess) {
+              console.warn(
+                "Inventory deduction had some issues, but order was placed successfully"
+              );
+            }
+
+            // Show success message
+            const notification = document.getElementById("notification");
+            notification.textContent =
+              "Order placed successfully! Ingredients deducted from inventory.";
+            notification.className = "notification success";
+
+            setTimeout(() => {
+              notification.className = "notification";
+            }, 3000);
+
+            // 5️⃣ Clear cart
+            cart = [];
+            localStorage.removeItem("cart");
+            renderCart();
+
+            // Redirect to payment page after a short delay
+            setTimeout(() => {
+              window.location.href = "payment.html";
+            }, 2000);
+          } catch (err) {
+            console.error("Error placing order:", err);
+
+            const notification = document.getElementById("notification");
+            notification.textContent =
+              "Something went wrong while placing your order.";
+            notification.className = "notification error";
+
+            setTimeout(() => {
+              notification.className = "notification";
+            }, 3000);
+          }
+        });
+
+      // =============================
+      // Initial Load
+      // =============================
+      async function initialize() {
+        await fetchMenu();
+        await fetchInventory();
+        renderCart();
+
+        // Display user info if logged in
+        if (userId) {
+          document.getElementById(
+            "userInfo"
+          ).textContent = `User ID: ${userId}`;
+        } else {
+          document.getElementById("userInfo").textContent = "Guest User";
+        }
+      }
+
+      initialize();
+    </script>
+  </body>
+</html>
