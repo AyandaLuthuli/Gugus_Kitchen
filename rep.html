@@ -6,7 +6,6 @@
     <title>Gugu's Kitchen - Reports Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="styles.css" />
     <style>
       :root {
         --primary: #ff7b00;
@@ -49,19 +48,7 @@
         justify-content: space-between;
         align-items: center;
       }
-      .tittle {
-        font-size: 1.8rem;
-        color: #ffffff;
-      }
-      div .btn {
-        background-color: #000000;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1rem;
-      }
+
       h1,
       h2,
       h3,
@@ -254,86 +241,17 @@
       .out-of-stock {
         background-color: #f8d7da;
       }
-      /* Responsive Styles */
-      /* Mobile Responsive Styles */
-      @media (max-width: 768px) {
-        header {
-          flex-direction: column;
-          text-align: center;
-          padding: 1rem 0.5rem;
-        }
 
-        header h1 {
-          font-size: 1.5rem;
-          margin-bottom: 10px;
-        }
-
-        header > div {
-          flex-direction: column;
-          gap: 10px;
-        }
-
-        .btn {
-          width: 100%;
-          padding: 10px;
-        }
-
-        .dashboard {
-          grid-template-columns: 1fr;
-        }
-
-        .filters {
-          flex-direction: column;
-        }
-
-        .filter-group {
-          width: 100%;
-        }
-
-        .tabs {
-          overflow-x: auto;
-          white-space: nowrap;
-        }
-
-        .tab {
-          padding: 10px 15px;
-        }
-
-        .stat-value {
-          font-size: 2rem;
-        }
-
-        table {
-          display: block;
-          overflow-x: auto;
-        }
-
-        th,
-        td {
-          padding: 8px 10px;
-          font-size: 0.9rem;
-        }
+      .chart-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
       }
 
-      @media (max-width: 480px) {
-        .container {
-          padding: 10px;
-        }
-
-        header h1 {
-          font-size: 1.3rem;
-        }
-
-        .card {
-          padding: 15px;
-        }
-
-        .stat-value {
-          font-size: 1.8rem;
-        }
-
-        .chart-container {
-          height: 250px;
+      @media (max-width: 768px) {
+        .chart-row {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -341,17 +259,10 @@
   <body>
     <div class="container">
       <header>
-        <h1 class="tittle">Gugu's Kitchen - Reports Dashboard</h1>
+        <h1>Gugu's Kitchen - Reports Dashboard</h1>
         <div>
-          <a href="admin.html" class="login-nav-btn">Edit Menu</a>
-          <a href="ordersAdmin.html" class="login-nav-btn">View Orders</a>
-          <a href="iv.html" class="login-nav-btn">inventory</a>
-          <a href="report.html" class="login-nav-btn">Reports</a>
-          <a href="index.html" class="login-nav-btn">Customer Login</a>
-          <button class="btn" class="Refresh" id="refreshBtn">
-            Refresh Data
-          </button>
-          <!-- <button class="btn btn-secondary" id="backBtn">Back to Main</button> -->
+          <button class="btn" id="refreshBtn">Refresh Data</button>
+          <button class="btn btn-secondary" id="backBtn">Back to Main</button>
         </div>
       </header>
 
@@ -375,9 +286,9 @@
         </div>
 
         <div class="card stat-card">
-          <div class="stat-label">Total Menu Items</div>
-          <div class="stat-value" id="menuItemsCount">0</div>
-          <div class="stat-label">Across all categories</div>
+          <div class="stat-label">Total Customers</div>
+          <div class="stat-value" id="customersCount">0</div>
+          <div class="stat-label">Registered users</div>
         </div>
       </div>
 
@@ -428,17 +339,35 @@
       </div>
 
       <div class="tab-content active" id="chartsTab">
-        <div class="card">
-          <h3>Revenue Trends</h3>
-          <div class="chart-container">
-            <canvas id="revenueChart"></canvas>
+        <div class="chart-row">
+          <div class="card">
+            <h3>Revenue Trends</h3>
+            <div class="chart-container">
+              <canvas id="revenueChart"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>User Types</h3>
+            <div class="chart-container">
+              <canvas id="userTypesChart"></canvas>
+            </div>
           </div>
         </div>
 
-        <div class="card">
-          <h3>Top Selling Menu Items</h3>
-          <div class="chart-container">
-            <canvas id="popularItemsChart"></canvas>
+        <div class="chart-row">
+          <div class="card">
+            <h3>Top Selling Menu Items</h3>
+            <div class="chart-container">
+              <canvas id="popularItemsChart"></canvas>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Payment Methods</h3>
+            <div class="chart-container">
+              <canvas id="paymentMethodsChart"></canvas>
+            </div>
           </div>
         </div>
       </div>
@@ -532,6 +461,8 @@
       // =============================
       let revenueChart = null;
       let popularItemsChart = null;
+      let userTypesChart = null;
+      let paymentMethodsChart = null;
       let currentUser = null;
 
       // =============================
@@ -641,21 +572,21 @@
           // Get date range
           const dateRange = getDateRange();
 
-          // Today's revenue and orders
-          const { data: todayData, error: todayError } = await supabase
-            .from("orders")
-            .select("id, total, created_at")
+          // Get today's payments (completed orders)
+          const { data: todayPayments, error: todayError } = await supabase
+            .from("payments")
+            .select("amount, created_at, orders!inner(status)")
             .gte("created_at", dateRange.todayStart)
             .lte("created_at", dateRange.todayEnd)
-            .eq("status", "paid");
+            .eq("orders.status", "paid");
 
           if (todayError) throw todayError;
 
-          const todayRevenue = todayData.reduce(
-            (sum, order) => sum + parseFloat(order.total),
+          const todayRevenue = todayPayments.reduce(
+            (sum, payment) => sum + parseFloat(payment.amount),
             0
           );
-          const todayOrders = todayData.length;
+          const todayOrders = todayPayments.length;
 
           document.getElementById(
             "todayRevenue"
@@ -664,21 +595,21 @@
             "todayOrders"
           ).textContent = `${todayOrders} orders`;
 
-          // This month's revenue and orders
-          const { data: monthData, error: monthError } = await supabase
-            .from("orders")
-            .select("id, total, created_at")
+          // Get this month's payments (completed orders)
+          const { data: monthPayments, error: monthError } = await supabase
+            .from("payments")
+            .select("amount, created_at, orders!inner(status)")
             .gte("created_at", dateRange.monthStart)
             .lte("created_at", dateRange.monthEnd)
-            .eq("status", "paid");
+            .eq("orders.status", "paid");
 
           if (monthError) throw monthError;
 
-          const monthRevenue = monthData.reduce(
-            (sum, order) => sum + parseFloat(order.total),
+          const monthRevenue = monthPayments.reduce(
+            (sum, payment) => sum + parseFloat(payment.amount),
             0
           );
-          const monthOrders = monthData.length;
+          const monthOrders = monthPayments.length;
 
           document.getElementById(
             "monthRevenue"
@@ -701,15 +632,16 @@
           document.getElementById("lowStockCount").textContent =
             lowStockItems.length;
 
-          // Menu items count
-          const { data: menuData, error: menuError } = await supabase
-            .from("menu")
-            .select("id");
+          // Customer count
+          const { data: usersData, error: usersError } = await supabase
+            .from("users")
+            .select("id, role")
+            .eq("role", "customer");
 
-          if (menuError) throw menuError;
+          if (usersError) throw usersError;
 
-          document.getElementById("menuItemsCount").textContent =
-            menuData.length;
+          document.getElementById("customersCount").textContent =
+            usersData.length;
         } catch (error) {
           console.error("Error loading dashboard stats:", error);
           throw error;
@@ -897,7 +829,7 @@
           // Get orders for the date range
           const { data: ordersData, error: ordersError } = await supabase
             .from("orders")
-            .select("id, total, created_at")
+            .select("id, total, created_at, status")
             .gte("created_at", dateRange.start)
             .lte("created_at", dateRange.end)
             .eq("status", "paid")
@@ -905,20 +837,56 @@
 
           if (ordersError) throw ordersError;
 
-          // Group orders by date for revenue chart
-          const revenueByDate = {};
-          ordersData.forEach((order) => {
-            const date = new Date(order.created_at).toLocaleDateString();
-            if (!revenueByDate[date]) {
-              revenueByDate[date] = 0;
+          // Get payments for these orders
+          const { data: paymentsData, error: paymentsError } = await supabase
+            .from("payments")
+            .select("order_id, amount, method")
+            .in(
+              "order_id",
+              ordersData.map((order) => order.id)
+            );
+
+          if (paymentsError) throw paymentsError;
+
+          // Group payments by date for revenue chart
+          const paymentMap = {};
+          paymentsData.forEach((payment) => {
+            const order = ordersData.find((o) => o.id === payment.order_id);
+            if (order) {
+              const date = new Date(order.created_at).toLocaleDateString();
+              if (!paymentMap[date]) {
+                paymentMap[date] = 0;
+              }
+              paymentMap[date] += parseFloat(payment.amount);
             }
-            revenueByDate[date] += parseFloat(order.total);
           });
 
           // Create revenue chart
           createRevenueChart(
-            Object.keys(revenueByDate),
-            Object.values(revenueByDate)
+            Object.keys(paymentMap),
+            Object.values(paymentMap)
+          );
+
+          // Get user types data
+          const { data: usersData, error: usersError } = await supabase
+            .from("users")
+            .select("role");
+
+          if (usersError) throw usersError;
+
+          // Count users by role
+          const userRoles = {};
+          usersData.forEach((user) => {
+            if (!userRoles[user.role]) {
+              userRoles[user.role] = 0;
+            }
+            userRoles[user.role]++;
+          });
+
+          // Create user types chart
+          createUserTypesChart(
+            Object.keys(userRoles),
+            Object.values(userRoles)
           );
 
           // Get order items for popular items chart
@@ -957,6 +925,21 @@
           createPopularItemsChart(
             popularItems.map((item) => item[0]),
             popularItems.map((item) => item[1])
+          );
+
+          // Count payment methods
+          const paymentMethods = {};
+          paymentsData.forEach((payment) => {
+            if (!paymentMethods[payment.method]) {
+              paymentMethods[payment.method] = 0;
+            }
+            paymentMethods[payment.method]++;
+          });
+
+          // Create payment methods chart
+          createPaymentMethodsChart(
+            Object.keys(paymentMethods),
+            Object.values(paymentMethods)
           );
         } catch (error) {
           console.error("Error loading charts data:", error);
@@ -1009,6 +992,52 @@
       }
 
       // =============================
+      // Create User Types Chart
+      // =============================
+      function createUserTypesChart(labels, data) {
+        const ctx = document.getElementById("userTypesChart").getContext("2d");
+
+        // Destroy previous chart if it exists
+        if (userTypesChart) {
+          userTypesChart.destroy();
+        }
+
+        userTypesChart = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                data: data,
+                backgroundColor: [
+                  "rgba(255, 123, 0, 0.7)",
+                  "rgba(40, 167, 69, 0.7)",
+                  "rgba(23, 162, 184, 0.7)",
+                  "rgba(108, 117, 125, 0.7)",
+                ],
+                borderColor: [
+                  "rgba(255, 123, 0, 1)",
+                  "rgba(40, 167, 69, 1)",
+                  "rgba(23, 162, 184, 1)",
+                  "rgba(108, 117, 125, 1)",
+                ],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+              },
+            },
+          },
+        });
+      }
+
+      // =============================
       // Create Popular Items Chart
       // =============================
       function createPopularItemsChart(labels, data) {
@@ -1042,6 +1071,54 @@
             scales: {
               x: {
                 beginAtZero: true,
+              },
+            },
+          },
+        });
+      }
+
+      // =============================
+      // Create Payment Methods Chart
+      // =============================
+      function createPaymentMethodsChart(labels, data) {
+        const ctx = document
+          .getElementById("paymentMethodsChart")
+          .getContext("2d");
+
+        // Destroy previous chart if it exists
+        if (paymentMethodsChart) {
+          paymentMethodsChart.destroy();
+        }
+
+        paymentMethodsChart = new Chart(ctx, {
+          type: "pie",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                data: data,
+                backgroundColor: [
+                  "rgba(255, 193, 7, 0.7)",
+                  "rgba(23, 162, 184, 0.7)",
+                  "rgba(40, 167, 69, 0.7)",
+                  "rgba(108, 117, 125, 0.7)",
+                ],
+                borderColor: [
+                  "rgba(255, 193, 7, 1)",
+                  "rgba(23, 162, 184, 1)",
+                  "rgba(40, 167, 69, 1)",
+                  "rgba(108, 117, 125, 1)",
+                ],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
               },
             },
           },
