@@ -711,11 +711,11 @@
         await fetchLatestOrder(currentUser.id);
 
         // Set up event listeners for buttons
-        document
-          .getElementById("orderAgainBtn")
-          .addEventListener("click", () => {
-            window.location.href = "menu.html";
-          });
+        // document
+        //   .getElementById("orderAgainBtn")
+        //   .addEventListener("click", () => {
+        //     window.location.href = "menu.html";
+        //   });
 
         document.getElementById("logoutBtn").addEventListener("click", () => {
           localStorage.removeItem("loggedInUser");
