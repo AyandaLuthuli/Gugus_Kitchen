@@ -187,7 +187,7 @@ document.getElementById("checkoutBtn").addEventListener("click", async () => {
 
     if (itemsError) throw itemsError;
 
-    alert("Order placed successfully!");
+    alert("Cart successfully!");
 
     // 4️⃣ Clear cart
     cart = [];
