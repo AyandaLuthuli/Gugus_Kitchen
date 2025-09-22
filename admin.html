@@ -47,7 +47,16 @@
             required
           />
           <input type="text" id="category" placeholder="Category" required />
-          <input type="text" id="imageUrl" placeholder="Image URL" required />
+          <form action="/upload" method="POST" enctype="multipart/form-data">
+  <label for="image">Choose an image</label>
+  <input
+    id="image"
+    name="image"
+    type="file"
+    accept="image/*"
+    required
+  />
+          <input type="text" id="imageUrl" placeholder="Image bucket" required />
           <button type="submit">Add Item</button>
         </form>
       </section>
