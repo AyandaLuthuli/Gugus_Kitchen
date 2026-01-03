@@ -295,7 +295,7 @@
       const SUPABASE_URL = "https://dqnmbayimyiuqfzdalox.supabase.co";
       const SUPABASE_ANON_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxbm1iYXlpbXlpdXFmemRhbG94Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5OTIwOTYsImV4cCI6MjA3MDU2ODA5Nn0.XPsThMYTgbUX4JU743QhdDwPvVMcPZ1_3OBvMMGW5o4";
-      const supabase = window.supabase.createClient(
+      const supabaseClient = window.supabase.createClient(
         SUPABASE_URL,
         SUPABASE_ANON_KEY
       );
@@ -313,7 +313,7 @@
       // =============================
       async function fetchLatestOrder(userId) {
         try {
-          const { data, error } = await supabase
+          const { data, error } = await supabaseClient
             .from("orders")
             .select("*")
             .eq("user_id", userId)
@@ -351,7 +351,7 @@
       // =============================
       async function fetchOrderItems(orderId) {
         try {
-          const { data, error } = await supabase
+          const { data, error } = await supabaseClient
             .from("order_items")
             .select(
               `
@@ -393,7 +393,7 @@
       // =============================
       async function fetchInventory() {
         try {
-          const { data, error } = await supabase.from("inventory").select("*");
+          const { data, error } = await supabaseClient.from("inventory").select("*");
 
           if (error) throw error;
 
@@ -480,7 +480,7 @@
         notes = ""
       ) {
         try {
-          const { data, error } = await supabase
+          const { data, error } = await supabaseClient
             .from("inventory_transactions")
             .insert([
               {
@@ -544,7 +544,7 @@
                 );
 
                 // Update inventory
-                const { error: updateError } = await supabase
+                const { error: updateError } = await supabaseClient
                   .from("inventory")
                   .update({
                     current_quantity: newQuantity,
@@ -628,7 +628,7 @@
             created_at: new Date().toISOString(),
           };
 
-          const { data: paymentData, error: paymentError } = await supabase
+          const { data: paymentData, error: paymentError } = await supabaseClient
             .from("payments")
             .insert([payment])
             .select();
@@ -636,7 +636,7 @@
           if (paymentError) throw paymentError;
 
           // 2. Update order status to paid
-          const { error: orderError } = await supabase
+          const { error: orderError } = await supabaseClient
             .from("orders")
             .update({ status: "paid" })
             .eq("id", latestOrder.id);

@@ -9,7 +9,10 @@ console.log("Current User ID:", userId);
 const SUPABASE_URL = "https://dqnmbayimyiuqfzdalox.supabase.co"; // replace with your Supabase project URL
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxbm1iYXlpbXlpdXFmemRhbG94Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ5OTIwOTYsImV4cCI6MjA3MDU2ODA5Nn0.XPsThMYTgbUX4JU743QhdDwPvVMcPZ1_3OBvMMGW5o4"; // replace with your anon key from Supabase
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
 // =============================
 // Global State
@@ -21,7 +24,7 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 // Fetch Menu Items
 // =============================
 async function fetchMenu() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("menu")
     .select("*")
     .order("id", { ascending: true });
@@ -162,7 +165,7 @@ document.getElementById("checkoutBtn").addEventListener("click", async () => {
 
   try {
     // 1️⃣ Insert into orders
-    const { data: orderData, error: orderError } = await supabase
+    const { data: orderData, error: orderError } = await supabaseClient
       .from("orders")
       .insert([{ user_id: userId, status: "pending", total }])
       .select()
@@ -181,7 +184,7 @@ document.getElementById("checkoutBtn").addEventListener("click", async () => {
     }));
 
     // 3️⃣ Insert order_items
-    const { error: itemsError } = await supabase
+    const { error: itemsError } = await supabaseClient
       .from("order_items")
       .insert(orderItems);
 
